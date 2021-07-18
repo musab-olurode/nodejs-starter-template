@@ -1,0 +1,33 @@
+{
+	"name": "nodejs-starter-template",
+	"version": "1.0.0",
+	"description": "Starter template for nodejs apps",
+	"main": "server.js",
+	"repository": "https://github.com/musab-olurode/nodejs-starter-template.git",
+	"scripts": {
+		"test": "echo no tests configured",
+		"prod": "node server",
+		"start": "node server",
+		"dev": "cross-env NODE_ENV=development nodemon server"
+	},
+	"author": "The Binary Agency",
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"bcryptjs": "^2.4.3",
+		"colors": "^1.4.0",
+		"cookie-parser": "^1.4.5",
+		"cors": "^2.8.5",
+		"cross-env": "^7.0.3",
+		"dotenv": "^10.0.0",
+		"eslint": "^7.30.0",
+		"express": "^4.17.1",
+		"express-fileupload": "^1.2.1",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^5.13.2",
+		"morgan": "^1.10.0",
+		"nodemailer": "^6.6.3",
+		"nodemon": "^2.0.12",
+		"winston": "^3.3.3"
+	}
+}
