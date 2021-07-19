@@ -1,19 +1,18 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const morgan = require('morgan');
-const errorHandler = require('./middleware/error');
-const colors = require('colors');
-const connectDB = require('./config/db');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const fileupload = require('express-fileupload');
-const path = require('path');
+import express from 'express';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import { errorHandler, routeErrorHandler } from './app/middleware/error';
+import colors from 'colors';
+import connectDB from './app/config/db';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import fileupload from 'express-fileupload';
 
 // Load env vars
-dotenv.config({ path: './.env' });
+dotenv.config();
 
 // Route files
-// const auth = require('./routes/auth.route');
+import exampleRoute from './routes/example.route';
 
 // Connect to database
 connectDB();
@@ -39,10 +38,10 @@ if (process.env.NODE_ENV === 'development') {
 app.use(fileupload());
 
 // Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public', new URL('../public', import.meta.url)));
 
 // Mount routers
-// app.use("/v1/auth", auth);
+app.use('/v1/hello', exampleRoute);
 
 const PORT = process.env.PORT || 7500;
 
@@ -55,6 +54,7 @@ const server = app.listen(PORT, () => {
 });
 
 app.use(errorHandler);
+app.use(routeErrorHandler);
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {

@@ -1,10 +1,11 @@
-const ErrorResponse = require('../utils/errorResponse.util');
-const winston = require('winston');
+import ErrorResponse from '../utils/errorResponse.util';
+import winston from 'winston';
 
 const files = new winston.transports.File({ filename: 'debug.log' });
 winston.add(files);
 
 const errorHandler = (err, req, res, next) => {
+	console.log(err);
 	let error = { ...err };
 
 	error.message = err.message;
@@ -22,7 +23,7 @@ const errorHandler = (err, req, res, next) => {
 	if (err.code === 11000) {
 		const message = `The ${Object.entries(err.keyValue)[0][0]} ${
 			Object.entries(err.keyValue)[0][1]
-		} has already been used, please try something else.`;
+		} has already been used, please try something else`;
 		error = new ErrorResponse(message, 400);
 	}
 
@@ -42,7 +43,7 @@ const errorHandler = (err, req, res, next) => {
 	} else {
 		// Syntax error
 		if (err.name === 'TypeError') {
-			const message = 'A server Error has occured';
+			const message = 'A server Error has occurred';
 			error = new ErrorResponse(message, 404);
 		}
 
@@ -54,10 +55,17 @@ const errorHandler = (err, req, res, next) => {
 		} else {
 			res.status(500).json({
 				success: false,
-				error: 'A Server Error has occured.',
+				error: 'A Server Error has occurred.',
 			});
 		}
 	}
 };
 
-module.exports = errorHandler;
+const routeErrorHandler = (req, res, next) => {
+	res.status(404).send({
+		success: false,
+		error: `Cannot ${req.method} '${req.path}'`,
+	});
+};
+
+export { errorHandler, routeErrorHandler };

@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken');
-const asyncHandler = require('./async');
-const ErrorResponse = require('../utils/errorResponse.util');
-const User = require('../models/User');
-const Admin = require('../models/Admin');
+import jwt from 'jsonwebtoken';
+import asyncHandler from './async';
+import ErrorResponse from '../utils/errorResponse.util';
+import User from '../models/User';
+import Admin from '../models/Admin';
 
 // Protect routes
-exports.protect = asyncHandler(async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
 	let token;
 	if (
 		req.headers.authorization &&
@@ -34,7 +34,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 // Grant access to only admins
-exports.admin = asyncHandler(async (req, res, next) => {
+const admin = asyncHandler(async (req, res, next) => {
 	let token;
 	if (
 		req.headers.authorization &&
@@ -63,7 +63,7 @@ exports.admin = asyncHandler(async (req, res, next) => {
 });
 
 // Grant access to specific admin permissions
-exports.authorizeAdmin = (...roles) => {
+const authorizeAdmin = (...roles) => {
 	return (req, res, next) => {
 		if (req.admin.userType !== 'Admin') {
 			return next(
@@ -74,7 +74,7 @@ exports.authorizeAdmin = (...roles) => {
 	};
 };
 
-exports.authorize = (...roles) => {
+const authorize = (...roles) => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.role)) {
 			return next(
@@ -87,3 +87,5 @@ exports.authorize = (...roles) => {
 		next();
 	};
 };
+
+export { protect, admin, authorize, authorizeAdmin };
