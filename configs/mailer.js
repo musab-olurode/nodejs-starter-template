@@ -1,7 +1,7 @@
-import nodemailer from 'nodemailer';
+import { createTransport } from 'nodemailer';
 
 const sendEmail = async (options) => {
-	const transporter = nodemailer.createTransport({
+	const transporter = createTransport({
 		host: process.env.SMTP_HOST,
 		port: process.env.SMTP_PORT,
 		secure: false,
@@ -24,7 +24,9 @@ const sendEmail = async (options) => {
 		html: options.html ? options.html : null,
 	};
 
-	await transporter.sendMail(message);
+	const info = await transporter.sendMail(message);
+
+	console.log('Message sent: %s', info.messageId.blue);
 };
 
 export default sendEmail;

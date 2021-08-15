@@ -1,9 +1,8 @@
-const advancedResults =
-	(model, userType, populate) => async (req, res, next) => {
+const advancedResults = (req, res, next) => {
+	res.advancedResults = async (model, populate) => {
 		let query;
 
-		// Copy req.query and include the route's userTypes
-		const reqQuery = userType ? { userType, ...req.query } : req.query;
+		const reqQuery = req.query;
 
 		// Fields to exclude
 		const removeFields = ['select', 'sort', 'page', 'limit', 'exists'];
@@ -92,14 +91,15 @@ const advancedResults =
 			};
 		}
 
-		res.advancedResults = {
+		return res.status(200).json({
 			success: true,
+			message: 'records retrieved',
 			count: results.length,
 			pagination,
 			data: results,
-		};
-
-		next();
+		});
 	};
+	next();
+};
 
 export default advancedResults;

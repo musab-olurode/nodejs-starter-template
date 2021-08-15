@@ -1,16 +1,16 @@
 {
 	"name": "nodejs-starter-template",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"description": "Starter template for nodejs apps",
-	"main": "./src/index.js",
+	"main": "server.js",
 	"repository": "https://github.com/musab-olurode/nodejs-starter-template.git",
 	"scripts": {
-		"test": "jest",
-		"prod": "node --es-module-specifier-resolution=node ./src",
-		"start": "node --es-module-specifier-resolution=node ./src",
-		"dev": "cross-env NODE_ENV=development nodemon --es-module-specifier-resolution=node ./src"
+		"test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js",
+		"prod": "node -r dotenv/config --es-module-specifier-resolution=node server",
+		"start": "node -r dotenv/config --es-module-specifier-resolution=node server",
+		"dev": "cross-env NODE_ENV=development nodemon -r dotenv/config --es-module-specifier-resolution=node server"
 	},
-	"author": "The Binary Agency",
+	"author": "Mus'ab Olurode",
 	"license": "ISC",
 	"dependencies": {
 		"axios": "^0.21.1",
@@ -23,12 +23,18 @@
 		"eslint": "^7.30.0",
 		"express": "^4.17.1",
 		"express-fileupload": "^1.2.1",
+		"express-mongo-sanitize": "^1.3.2",
+		"express-rate-limit": "^5.1.3",
+		"helmet": "^4.1.1",
+		"hpp": "^0.2.3",
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.13.2",
 		"morgan": "^1.10.0",
 		"nodemailer": "^6.6.3",
 		"nodemon": "^2.0.12",
-		"winston": "^3.3.3"
+		"validatorjs": "^3.22.1",
+		"winston": "^3.3.3",
+		"xss-clean": "^0.1.1"
 	},
 	"devDependencies": {
 		"jest": "^27.0.6",

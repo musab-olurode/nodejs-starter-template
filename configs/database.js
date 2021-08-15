@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
+// eslint-disable-next-line no-unused-vars
+import colors from 'colors';
 
-const connectDB = async () => {
+const TESTING = process.env.NODE_ENV === 'test';
+
+const ConnectDB = async () => {
 	const conn = await mongoose.connect(process.env.MONGO_URI, {
 		useNewUrlParser: true,
 		useCreateIndex: true,
@@ -8,11 +12,12 @@ const connectDB = async () => {
 		useUnifiedTopology: true,
 	});
 
-	console.log(
-		`
+	!TESTING &&
+		console.log(
+			`
                                                 ------------------ MongoDB Connected: ${conn.connection.host} -----------------
   `.cyan.bold
-	);
+		);
 };
 
-export default connectDB;
+export default ConnectDB;
