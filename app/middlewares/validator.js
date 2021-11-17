@@ -26,11 +26,33 @@ const registerCustomRules = () => {
 			return passes();
 		}
 	);
+	Validator.registerAsync(
+		'unique',
+		// eslint-disable-next-line no-unused-vars
+		async (value, requirement, attribute, passes) => {
+			if (!requirement) {
+				return passes(false, 'exists requirements are expected');
+			}
+			const requirements = requirement.split(',');
+			if (requirements.length !== 2) {
+				return passes(false, 'exists requirements must be exactly 2');
+			}
+			const modelName = requirements[0];
+			const modelField = requirements[1];
+			const formattedModelName =
+				modelName.charAt(0).toUpperCase() + modelName.slice(1);
+			const Model = mongoose.connection.model(formattedModelName);
+			const foundModel = await Model.findOne({ [modelField]: value });
+			if (foundModel) {
+				return passes(false, `The ${attribute} already exists`);
+			}
+			return passes();
+		}
+	);
 	Validator.register(
 		'file',
 		// eslint-disable-next-line no-unused-vars
 		(value, requirement, attribute) => {
-			console.log(value);
 			if (!value.isFile) {
 				return false;
 			}

@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-const ExampleModelSchema = mongoose.Schema(
+const UserSchema = mongoose.Schema(
 	{
 		username: {
 			type: String,
@@ -38,7 +38,7 @@ const ExampleModelSchema = mongoose.Schema(
 );
 
 //Encrypt password
-ExampleModelSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next) {
 	if (!this.isModified('password')) {
 		next();
 	}
@@ -48,12 +48,12 @@ ExampleModelSchema.pre('save', async function (next) {
 });
 
 // Verify if password is valid
-ExampleModelSchema.methods.validPassword = function (password) {
+UserSchema.methods.validPassword = function (password) {
 	return bcrypt.compareSync(password, this.local.password);
 };
 
 // Sign JWT and return
-ExampleModelSchema.methods.getSignedJwtToken = function () {
+UserSchema.methods.getSignedJwtToken = function () {
 	return jwt.sign(
 		{ id: this._id, userType: this.userType },
 		process.env.JWT_SECRET,
@@ -64,12 +64,12 @@ ExampleModelSchema.methods.getSignedJwtToken = function () {
 };
 
 // Match User entered password to hashed password in database
-ExampleModelSchema.methods.matchPassword = async function (enteredPassword) {
+UserSchema.methods.matchPassword = async function (enteredPassword) {
 	return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Generate and hash password token
-ExampleModelSchema.methods.getResetPasswordToken = function () {
+UserSchema.methods.getResetPasswordToken = function () {
 	// Generate token
 	const resetToken = crypto.randomBytes(20).toString('hex');
 
@@ -85,4 +85,4 @@ ExampleModelSchema.methods.getResetPasswordToken = function () {
 	return resetToken;
 };
 
-export default mongoose.model('ExampleModel', ExampleModelSchema);
+export default mongoose.model('User', UserSchema);

@@ -94,9 +94,9 @@ const advancedResults = (req, res, next) => {
 		return res.status(200).json({
 			success: true,
 			message: 'records retrieved',
+			data: results,
 			count: results.length,
 			pagination,
-			data: results,
 		});
 	};
 	next();
