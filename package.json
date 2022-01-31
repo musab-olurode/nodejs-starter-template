@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"repository": "https://github.com/musab-olurode/nodejs-starter-template.git",
 	"scripts": {
-		"test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js",
+		"test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles",
 		"prod": "node -r dotenv/config --es-module-specifier-resolution=node server",
 		"start": "node -r dotenv/config --es-module-specifier-resolution=node server",
 		"dev": "cross-env NODE_ENV=development nodemon -r dotenv/config --es-module-specifier-resolution=node server"
@@ -40,8 +40,5 @@
 		"jest": "^27.0.6",
 		"supertest": "^6.1.3"
 	},
-	"type": "module",
-	"jest": {
-		"testEnvironment": "node"
-	}
+	"type": "module"
 }

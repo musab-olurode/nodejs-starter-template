@@ -127,9 +127,7 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
 	await user.save({ validateBeforeSave: false });
 
 	// Create reset url
-	const resetUrl = `${req.protocol}://${req.get(
-		'host'
-	)}/v1/auth/reset-password/${resetToken}`;
+	const resetUrl = `${req.protocol}://${req.get('host')}/v1/auth/reset-password/${resetToken}`;
 
 	const message = `You are receiving this email because you requested the reset of a password. Please click on this link to continue: \n\n ${resetUrl}`;
 
@@ -159,9 +157,7 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 		resettoken: 'required|string',
 	});
 	// Get hashed token
-	const resetPasswordToken = createHash('sha256')
-		.update(req.params.resettoken)
-		.digest('hex');
+	const resetPasswordToken = createHash('sha256').update(req.params.resettoken).digest('hex');
 
 	const user = await User.findOne({
 		resetPasswordToken,
@@ -181,37 +177,30 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
 	sendTokenResponse(res, user);
 });
 
-export const getEmailVerificationToken = asyncHandler(
-	async (req, res, next) => {
-		const user = await User.findById(req.user.id);
+export const getEmailVerificationToken = asyncHandler(async (req, res, next) => {
+	const user = await User.findById(req.user.id);
 
-		if (user.verified) {
-			return errorResponse(next, 'User verified already', 400);
-		}
+	if (user.verified) {
+		return errorResponse(next, 'User verified already', 400);
+	}
 
-		const token = await EmailVerificationToken.findOne({ user: user._id });
+	const token = await EmailVerificationToken.findOne({ user: user._id });
 
-		const newToken = token.getVerificationToken();
+	const newToken = token.getVerificationToken();
 
-		await token.save();
+	await token.save();
 
-		const message = `Verify your email using the following link \n 
+	const message = `Verify your email using the following link \n 
                      ${process.env.FRONTEND_URL}/verify-email/${newToken}`;
 
-		await sendEmail({
-			email: user.email,
-			subject: `Email Confirmation, ${process.env.APP_NAME}`,
-			message,
-		});
+	await sendEmail({
+		email: user.email,
+		subject: `Email Confirmation, ${process.env.APP_NAME}`,
+		message,
+	});
 
-		successResponse(
-			res,
-			'Email verification sent, check your email inbox',
-			{},
-			200
-		);
-	}
-);
+	successResponse(res, 'Email verification sent, check your email inbox', {}, 200);
+});
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
 	req.validate({
@@ -220,9 +209,7 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
 	const emailToken = req.params.token;
 
 	// Get hashed token
-	const verificationToken = createHash('sha256')
-		.update(emailToken)
-		.digest('hex');
+	const verificationToken = createHash('sha256').update(emailToken).digest('hex');
 
 	const token = await EmailVerificationToken.findOne({
 		token: verificationToken,
@@ -254,9 +241,7 @@ const sendTokenResponse = (res, user, statusCode = 200) => {
 	const token = user.getSignedJwtToken();
 
 	const options = {
-		expires: new Date(
-			Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-		),
+		expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
 		httpOnly: true,
 	};
 
@@ -274,7 +259,7 @@ const sendTokenResponse = (res, user, statusCode = 200) => {
 
 	res.status(statusCode).cookie('token', token, options).json({
 		success: true,
-		data: user,
+		data: { user },
 		token,
 	});
 };

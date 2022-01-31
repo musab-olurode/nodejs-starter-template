@@ -1,35 +1,35 @@
 import ApiHelper from '../helpers/apiHelper';
-import assert from 'assert';
 import mongoose from 'mongoose';
 
 const helper = new ApiHelper();
 const urlPrefix = '/v1/';
 
-describe('POST /example |success', () => {
-	it('responds with success json', async () => {
-		return helper.apiServer
-			.post(`${urlPrefix}/example`)
-			.send({ email: 'email@mailinator.com', username: 'example-username' })
-			.expect(200)
-			.then(({ body }) => {
-				assert(body.success, true);
-				assert(body.data, {});
-			})
-			.catch((err) => err);
+describe('POST /auth/signup |success', () => {
+	it('responds with success json containing token and user', async () => {
+		const res = await helper.apiServer
+			.post(`${urlPrefix}/auth/signup`)
+			.send({
+				email: 'email@mailinator.com',
+				phone: '08123543543',
+				password: 'secret',
+				password_confirmation: 'secret',
+			});
+
+		expect(res.statusCode).toBe(201);
+		expect(res.body.success).toBe(true);
+		expect(res.body).toHaveProperty('token');
+		expect(res.body.data).toHaveProperty('user');
 	});
 });
 
-describe('POST /example |error', () => {
-	it('responds with error json', async () => {
-		return helper.apiServer
-			.post(`${urlPrefix}/example`)
-			.send({ email: 'email@mailinator', username: 'example-username' })
-			.expect(422)
-			.then(({ body }) => {
-				assert(body.success, false);
-				expect(body).toHaveProperty('error');
-			})
-			.catch((err) => err);
+describe('POST /auth/signup |error', () => {
+	it('responds with error json from failed validation', async () => {
+		const res = await helper.apiServer
+			.post(`${urlPrefix}/auth/signup`)
+			.send({ email: 'email@mailinator.com', username: 'example-username' });
+
+		expect(res.statusCode).toBe(422);
+		expect(res.body.success).toBe(false);
 	});
 });
 
